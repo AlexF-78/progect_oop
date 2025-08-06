@@ -121,7 +121,7 @@ def test_main_scenario_with_fixtures(sample_category):
     assert '55" QLED 4K' in sample_category.products
 
     def test_main_product_addition(self):
-        """Проверяем сложение продуктов как """
+        """Проверяем сложение продуктов """
         p1 = Product("A", "", 180000, 5)
         p2 = Product("B", "", 210000, 8)
         p3 = Product("C", "", 31000, 14)
