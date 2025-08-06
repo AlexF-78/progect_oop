@@ -25,6 +25,11 @@ class Category:
         self.__products.append(product)
         Category.product_count += 1
 
+    def __str__(self) -> str:
+        # Выводит название категории и количество продуктов на складе
+        total_quantity = sum(product.quantity for product in self.__products)
+        return f"{self.name}, количество продуктов: {total_quantity} шт."
+
     @property
     def products(self) -> str:
         """Геттер возвращающий строку с информацией о всех продуктах"""

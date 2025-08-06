@@ -64,3 +64,19 @@ def test_add_product(sample_category):
     updated_products = [p for p in sample_category.products.split('\n') if p]
     assert len(updated_products) == initial_count + 1
     assert Category.product_count == initial_total + 1
+
+
+def test_category_str_representation(sample_category, sample_products):
+    """Тест строкового представления категории (метод __str__)"""
+    # Проверяем для категории с продуктами
+    expected_str = "Электроника, количество продуктов: 30 шт."  # 10 (Смартфон) + 5 (Ноутбук) + 15 (Наушники)
+    assert str(sample_category) == expected_str
+
+    # Проверяем для пустой категории
+    empty_category = Category("Пустая", "Нет товаров", [])
+    assert str(empty_category) == "Пустая, количество продуктов: 0 шт."
+
+    # Проверяем после добавления продукта
+    new_product = Product("Планшет", "Новый", 30000.0, 7)
+    sample_category.add_product(new_product)
+    assert str(sample_category) == "Электроника, количество продуктов: 37 шт."
