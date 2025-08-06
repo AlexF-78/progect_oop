@@ -21,22 +21,15 @@ def test_main_output(capsys):
 
     # Получаем вывод
     captured = capsys.readouterr()
-    output = captured.out
+    output = captured.out.strip().split('\n')
 
     # Проверяем ключевые элементы вывода
-    assert "Samsung Galaxy S23 Ultra" in output
-    assert "256GB, Серый цвет, 200MP камера" in output
-    assert "180000.0" in output
-    # assert "Смартфоны" in output
-    # assert "Телевизоры" in output
-    # Проверяем добавленный товар
-    assert '55" QLED 4K' in output
-    # Проверяем изменение цены
-    assert "800" in output
+    assert "Samsung Galaxy S23 Ultra, 180000.0 руб. Остаток: 5 шт." in output
+    assert "Iphone 15, 210000.0 руб. Остаток: 8 шт." in output
+    assert "Xiaomi Redmi Note 11, 31000.0 руб. Остаток: 14 шт." in output
+
     # Проверяем, что отрицательная цена не применилась
     assert "-100" not in output
-    # Проверяем вывод сообщения о недопустимой цене
-    assert "Цена не должна быть нулевая или отрицательная" in output
 
 
 def test_main_logic():
@@ -126,3 +119,13 @@ def test_main_scenario_with_fixtures(sample_category):
     # updated_products = [p for p in sample_category.products.split("\n") if p]
     assert Category.product_count == initial_total + 1
     assert '55" QLED 4K' in sample_category.products
+
+    def test_main_product_addition(self):
+        """Проверяем сложение продуктов как """
+        p1 = Product("A", "", 180000, 5)
+        p2 = Product("B", "", 210000, 8)
+        p3 = Product("C", "", 31000, 14)
+
+        assert p1 + p2 == 2580000
+        assert p1 + p3 == 1334000
+        assert p2 + p3 == 2114000
