@@ -4,6 +4,8 @@ import pytest
 
 from src.category import Category
 from src.product import Product
+from src.smartphone import Smartphone
+from src.lawn_grass import LawnGrass
 
 
 def test_main_output(capsys):
@@ -129,3 +131,33 @@ def test_main_scenario_with_fixtures(sample_category):
         assert p1 + p2 == 2580000
         assert p1 + p3 == 1334000
         assert p2 + p3 == 2114000
+
+
+def test_product_type_addition():
+    """Тест сложения товаров одного класса"""
+    p1 = Product("A", "", 100, 2)
+    p2 = Product("B", "", 200, 3)
+    assert p1 + p2 == 100*2 + 200*3  # 200 + 600 = 800
+
+
+def test_invalid_product_addition():
+    """Тест ошибки при сложении разных классов"""
+    smartphone = Smartphone("S1", "Desc", 1000, 1, 90, "M1", 64, "Black")
+    grass = LawnGrass("G1", "Desc", 500, 1, "Russia", "7 days", "Green")
+
+    with pytest.raises(TypeError, match="Нельзя складывать товары разных классов"):
+        smartphone + grass
+
+
+def test_category_product_validation():
+    """Тест добавления только продуктов в категорию"""
+    category = Category("Test", "Desc", [])
+    product = Product("Valid", "Product", 100, 1)
+
+    # Проверяем добавление продукта
+    category.add_product(product)
+    assert "Valid, 100 руб. Остаток: 1 шт." in category.products
+
+    # Проверяем ошибку при добавлении не-продукта
+    with pytest.raises(TypeError, match="Можно добавлять только объекты класса Product или его наследников"):
+        category.add_product("invalid")
