@@ -1,4 +1,8 @@
+import pytest
+
 from src.product import Product, total_quantity
+from src.smartphone import Smartphone
+from src.lawn_grass import LawnGrass
 
 
 def test_product_initialization():
@@ -53,3 +57,19 @@ def test_total_quantity(sample_products):
 
     # Проверяем с одним продуктом
     assert total_quantity(p1) == 599999.9
+
+
+def test_product_addition_same_type():
+    """Тест сложения товаров одного типа"""
+    smartphone1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5)  # 900000.0
+    smartphone2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)  # 1680000.0
+    assert smartphone1 + smartphone2 == 2580000.0
+
+
+def test_product_addition_different_types():
+    """Тест попытки сложения товаров разных типов"""
+    smartphone = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space")
+    lawn_grass = LawnGrass("Газонная трава", "Элитная трава для газона", 500.0, 20, "Россия", "7 дней", "Зеленый")
+
+    with pytest.raises(TypeError, match="Нельзя складывать товары разных классов"):
+        smartphone + lawn_grass
