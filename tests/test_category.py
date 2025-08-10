@@ -1,4 +1,4 @@
-# import pytest
+import pytest
 from src.category import Category
 from src.product import Product
 
@@ -80,3 +80,24 @@ def test_category_str_representation(sample_category, sample_products):
     new_product = Product("Планшет", "Новый", 30000.0, 7)
     sample_category.add_product(new_product)
     assert str(sample_category) == "Электроника, количество продуктов: 37 шт."
+
+
+def test_add_valid_product(sample_category):
+    """Тест добавления допустимого продукта"""
+    initial_count = len([p for p in sample_category.products.split('\n') if p])
+    new_product = Product("Планшет", "Новый", 30000.0, 5)
+    sample_category.add_product(new_product)
+    assert "Планшет, 30000.0 руб. Остаток: 5 шт." in sample_category.products
+    assert len([p for p in sample_category.products.split('\n') if p]) == initial_count + 1
+
+
+def test_add_invalid_product(sample_category):
+    """Тест попытки добавления недопустимого объекта"""
+    with pytest.raises(TypeError, match="Можно добавлять только объекты класса Product или его наследников"):
+        sample_category.add_product("не продукт")
+
+    with pytest.raises(TypeError):
+        sample_category.add_product(123)
+
+    with pytest.raises(TypeError):
+        sample_category.add_product({"name": "Не продукт"})
