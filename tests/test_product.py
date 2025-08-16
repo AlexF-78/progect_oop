@@ -1,9 +1,42 @@
 import pytest
+import io
+import sys
 
 from src.product import Product, total_quantity
 from src.smartphone import Smartphone
 from src.lawn_grass import LawnGrass
+from unittest.mock import patch
 
+
+def test_product_creation_logging(capsys):
+    """Тест вывода информации при создании продукта"""
+    product = Product("Тест", "Описание", 1000, 5)
+    captured = capsys.readouterr()
+
+    assert "Создан объект класса Product" in captured.out
+    assert "'name': 'Тест'" in captured.out
+    assert "'price': 1000" in captured.out
+    assert "'quantity': 5" in captured.out
+
+def test_repr_output():
+    """Тест формата __repr__ для Product"""
+    product = Product("Тест", "Описание", 1000, 5)
+    expected_repr = "Product(name='Тест', description='Описание', price=1000, quantity=5)"
+    assert repr(product) == expected_repr
+
+
+def test_smartphone_with_mixin(capsys):
+    """Тест работы миксина в классе Smartphone"""
+    phone = Smartphone("Телефон", "Описание", 50000, 3, "SD888", "Model X", 128, "Black")
+    captured = capsys.readouterr()
+
+    # Проверяем базовые параметры
+    assert "Создан объект класса Smartphone" in captured.out
+    assert "'name': 'Телефон'" in captured.out
+
+    # Проверяем, что объект создан с правильными атрибутами
+    assert phone.memory == 128
+    assert phone.color == "Black"
 
 def test_product_initialization():
     """Тест коррекции инициализации продукта"""
