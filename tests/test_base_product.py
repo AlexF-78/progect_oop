@@ -1,5 +1,5 @@
 import pytest
-from abc import ABC, abstractmethod
+
 from src.base_product import BaseProduct
 
 
