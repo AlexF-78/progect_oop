@@ -1,6 +1,7 @@
 from src.base_product import BaseProduct
 from src.print_mixin import PrintMixin
 
+
 class Product(PrintMixin, BaseProduct):
     name: str
     description: str
@@ -14,14 +15,14 @@ class Product(PrintMixin, BaseProduct):
         self.__price = price if self.validate_price(price) else 0.0
         self.quantity = quantity
 
-
     def __str__(self) -> str:
         """ Строковое представление продукта в формате: Название, цена руб. Остаток: количество шт."""
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other: "Product") -> float:
         """Сложение продуктов (цена * количество). Разрешено толь для объектов одного класса"""
-        if type(self) != type(other):
+        if type(self) is not type(other):
+            # if type(self) != type(other):
             raise TypeError("Нельзя складывать товары разных классов")
         return (self.price * self.quantity) + (other.price * other.quantity)
 
