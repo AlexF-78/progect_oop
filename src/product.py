@@ -1,10 +1,15 @@
-class Product:
+from src.base_product import BaseProduct
+from src.print_mixin import PrintMixin
+
+
+class Product(PrintMixin, BaseProduct):
     name: str
     description: str
     __price: float
     quantity: int
 
-    def __init__(self, name, description, price, quantity):
+    def __init__(self, name, description, price, quantity, **kwargs):
+        super().__init__(name=name, description=description, price=price, quantity=quantity, **kwargs)
         self.name = name
         self.description = description
         self.__price = price if self.validate_price(price) else 0.0
@@ -15,7 +20,10 @@ class Product:
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other: "Product") -> float:
-        """Сложение продуктов (цена * количество)"""
+        """Сложение продуктов (цена * количество). Разрешено толь для объектов одного класса"""
+        if type(self) is not type(other):
+            # if type(self) != type(other):
+            raise TypeError("Нельзя складывать товары разных классов")
         return (self.price * self.quantity) + (other.price * other.quantity)
 
     @property
@@ -55,9 +63,10 @@ def total_quantity(*products: Product) -> float:
         total += emp.price * emp.quantity
     return round(total, 2)
 
-# p1 = Product("Ноутбук", "", 100000, 5) # 500000
-# p2 = Product("Телефон", "", 80000, 10) # 800000
-# p3 = Product("Наушники", "", 5000, 20) # 100000
+# if __name__ == "__main__":
+#     p1 = Product("Ноутбук", "", 100000, 5) # 500000
+#     p2 = Product("Телефон", "", 80000, 10) # 800000
+#     p3 = Product("Наушники", "", 5000, 20) # 100000
 #
 # result = total_quantity(p1, p2, p3)
 # print(result)

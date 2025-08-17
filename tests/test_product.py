@@ -1,4 +1,45 @@
+import pytest
+
+from src.lawn_grass import LawnGrass
 from src.product import Product, total_quantity
+from src.smartphone import Smartphone
+
+
+def test_product_creation_logging(capsys):
+    """Тест вывода информации при создании продукта"""
+    product = Product("Тест", "Описание", 1000, 5)
+    captured = capsys.readouterr()
+
+    assert "Создан объект класса Product" in captured.out
+    assert "'name': 'Тест'" in captured.out
+    assert "'price': 1000" in captured.out
+    assert "'quantity': 5" in captured.out
+    assert product.name == "Тест"
+
+
+def test_repr_output():
+    """Тест формата __repr__ для Product"""
+    product = Product("Тест", "Описание", 1000, 5)
+    expected_repr = (
+        "Product(name='Тест', description='Описание', price=1000, quantity=5)"
+    )
+    assert repr(product) == expected_repr
+
+
+def test_smartphone_with_mixin(capsys):
+    """Тест работы миксина в классе Smartphone"""
+    phone = Smartphone(
+        "Телефон", "Описание", 50000, 3, "SD888", "Model X", 128, "Black"
+    )
+    captured = capsys.readouterr()
+
+    # Проверяем базовые параметры
+    assert "Создан объект класса Smartphone" in captured.out
+    assert "'name': 'Телефон'" in captured.out
+
+    # Проверяем, что объект создан с правильными атрибутами
+    assert phone.memory == 128
+    assert phone.color == "Black"
 
 
 def test_product_initialization():
@@ -53,3 +94,31 @@ def test_total_quantity(sample_products):
 
     # Проверяем с одним продуктом
     assert total_quantity(p1) == 599999.9
+
+
+def test_product_addition_same_type():
+    """Тест сложения товаров одного типа"""
+    smartphone1 = Product(
+        "Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 5
+    )  # 900000.0
+    smartphone2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 8)  # 1680000.0
+    assert smartphone1 + smartphone2 == 2580000.0
+
+
+def test_product_addition_different_types():
+    """Тест попытки сложения товаров разных типов"""
+    smartphone = Smartphone(
+        "Iphone 15", "512GB, Gray space", 210000.0, 8, 98.2, "15", 512, "Gray space"
+    )
+    lawn_grass = LawnGrass(
+        "Газонная трава",
+        "Элитная трава для газона",
+        500.0,
+        20,
+        "Россия",
+        "7 дней",
+        "Зеленый",
+    )
+
+    with pytest.raises(TypeError, match="Нельзя складывать товары разных классов"):
+        smartphone + lawn_grass
