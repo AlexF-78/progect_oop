@@ -1,55 +1,60 @@
-import pytest
+# import pytest
 from src.print_mixin import PrintMixin
 
 
-def test_mixin_output(capsys):
-    """Тестируем вывод при создании объекта"""
+class BaseForMixinTest:
+    """Базовый класс только для тестирования миксина"""
 
-    class TestProduct(PrintMixin):
-        def __init__(self, name, price):
-            self.name = name
-            self.price = price
+    def __init__(self, *args, **kwargs):
+        pass
 
-    # Создаём объект
-    TestProduct("Телевизор", 10000)
 
-    # Проверяем вывод
+class MixinTestSubject(PrintMixin, BaseForMixinTest):
+    """Класс для тестирования миксина """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.test_attr = "test_value"
+
+
+def test_mixin_init_output(capsys):
+    """Тест вывода при инициализации"""
+    obj = MixinTestSubject("arg1", 42, key="value")
     captured = capsys.readouterr()
-    assert "Создан объект класса TestProduct" in captured.out
-    assert "Телевизор" in captured.out or "10000" in captured.out
+
+    assert "Создан объект класса MixinTestSubject с параметрами:" in captured.out
+    assert "Позиционные аргументы: ('arg1', 42)" in captured.out
+    assert "Именованные аргументы: {'key': 'value'}" in captured.out
+
+    # Проверка, что объект корректно инициализирован
+    assert hasattr(obj, 'test_attr')
+    assert obj.test_attr == "test_value"
 
 
-def test_repr_output():
-    """Тестируем строковое представление"""
+def test_mixin_repr_basic():
+    """Тест базового repr"""
+    obj = MixinTestSubject()
+    obj.attr1 = "value1"
+    assert repr(obj) == "MixinTestSubject(test_attr='test_value', attr1='value1')"
 
-    class TestProduct(PrintMixin):
-        def __init__(self, id):
-            self.id = id
 
-    obj = TestProduct(123)
-    assert "123" in repr(obj)import pytest
-from src.print_mixin import PrintMixin
+def test_mixin_repr_with_private_attrs():
+    """Тест repr с приватными атрибутами"""
+    obj = MixinTestSubject()
+    obj._MixinTestSubject__private = "secret"
+    obj.__very_private = "very_secret"
+    repr_str = repr(obj)
 
-def test_mixin_output(capsys):
-    """Тестируем вывод при создании объекта"""
-    class TestProduct(PrintMixin):
-        def __init__(self, name, price):
-            self.name = name
-            self.price = price
-    
-    # Создаём объект
-    TestProduct("Телевизор", 10000)
-    
-    # Проверяем вывод
-    captured = capsys.readouterr()
-    assert "Создан объект класса TestProduct" in captured.out
-    assert "Телевизор" in captured.out or "10000" in captured.out
+    assert "private='secret'" in repr_str
+    assert "__very_private='very_secret'" in repr_str
+    assert repr_str.startswith("MixinTestSubject(")
 
-def test_repr_output():
-    """Тестируем строковое представление"""
-    class TestProduct(PrintMixin):
-        def __init__(self, id):
-            self.id = id
-    
-    obj = TestProduct(123)
-    assert "123" in repr(obj)
+
+def test_mixin_skips_internal_attrs():
+    """Тест что repr пропускает служебные атрибуты"""
+    obj = MixinTestSubject(1, 2, a=3)
+    repr_str = repr(obj)
+
+    assert "_init_args" not in repr_str
+    assert "_init_kwargs" not in repr_str
+    assert "test_attr='test_value'" in repr_str
