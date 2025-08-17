@@ -1,12 +1,3 @@
-import os
-
-import pytest
-import subprocess
-from src.category import Category
-from src.product import Product
-from src.smartphone import Smartphone
-from src.lawn_grass import LawnGrass
-
 
 def test_main_execution():
     """Проверяем что main.py выполняется без ошибок"""
