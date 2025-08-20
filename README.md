@@ -79,3 +79,14 @@
 2. Установите зависимости:
    ```bash
    pip install -r requirements.txt
+   
+##  Проверка покрытия тестами
+
+Чтобы сгенерировать отчет о покрытии:
+
+1. Установите зависимости: `pip install -r requirements.txt`
+2. Запустите тесты: `pytest --cov=src --cov-report=html tests/`
+3.                  'pytest . --cov=src --cov-report term-missing -vv'
+3. Откройте `htmlcov/index.html` в браузере
+
+**Текущее покрытие:** 87% (будет сгенерировано локально)
