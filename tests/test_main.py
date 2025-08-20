@@ -29,3 +29,24 @@ def test_categories_created():
     # Проверяем что код содержит создание категорий
     assert 'category1 = Category("Смартфоны"' in code
     assert 'category2 = Category("Телевизоры"' in code
+
+
+def test_zero_quantity_product_handling():
+    """Проверяем обработку товара с нулевым количеством в main.py"""
+    with open('src/main.py', 'r', encoding='utf-8') as f:
+        code = f.read()
+
+    # Проверяем что код содержит обработку исключения для нулевого количества
+    assert 'product_invalid = Product("Бракованный товар"' in code
+    assert 'except ValueError as e:' in code
+    assert 'нулевым количеством' in code
+
+
+def test_middle_price_calculation():
+    """Проверяем вызов метода средней цены в main.py"""
+    with open('src/main.py', 'r', encoding='utf-8') as f:
+        code = f.read()
+
+    # Проверяем что код содержит вызов middle_price()
+    assert 'middle_price()' in code
+    assert 'category_empty.middle_price()' in code
