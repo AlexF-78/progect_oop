@@ -9,6 +9,9 @@ class Product(PrintMixin, BaseProduct):
     quantity: int
 
     def __init__(self, name, description, price, quantity, **kwargs):
+        # Проверка на нулевое количество перед созданием объекта
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         super().__init__(name=name, description=description, price=price, quantity=quantity, **kwargs)
         self.name = name
         self.description = description
@@ -48,6 +51,9 @@ class Product(PrintMixin, BaseProduct):
     @classmethod
     def new_product(cls, product_data: dict) -> "Product":
         """Создаёт и возвращает новый экземпляр класса Product из словаря."""
+        # Проверка на нулевое количество при создании через new_product
+        if product_data.get("quantity", 0) == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         return cls(
             name=product_data["name"],
             description=product_data["description"],
