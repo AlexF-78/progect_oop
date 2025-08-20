@@ -122,3 +122,32 @@ def test_product_addition_different_types():
 
     with pytest.raises(TypeError, match="Нельзя складывать товары разных классов"):
         smartphone + lawn_grass
+
+
+def test_product_with_zero_quantity():
+    """Тест создания продукта с нулевым количеством - должно вызывать ValueError"""
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product("Бракованный товар", "Неверное количество", 1000.0, 0)
+
+
+def test_new_product_with_zero_quantity():
+    """Тест создания продукта через new_product с нулевым количеством - должно вызывать ValueError"""
+    product_data = {
+        "name": "Бракованный товар",
+        "description": "Неверное количество",
+        "price": 1000.0,
+        "quantity": 0
+    }
+
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product.new_product(product_data)
+
+
+def test_product_creation_with_positive_quantity():
+    """Тест корректного создания продукта с положительным количеством"""
+    # Эти вызовы не должны вызывать исключений
+    product1 = Product("Товар 1", "Описание", 1000.0, 1)
+    product2 = Product("Товар 2", "Описание", 2000.0, 5)
+
+    assert product1.quantity == 1
+    assert product2.quantity == 5
