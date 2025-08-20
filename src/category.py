@@ -42,3 +42,18 @@ class Category:
         for product in self.__products:
             products_info.append(f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n")
         return "\n".join(products_info)
+
+
+    def middle_price(self) -> float:
+        """
+        Подсчитывает средний ценник всех товаров в категории.
+        Возвращает 0, если в категории нет товаров.
+        """
+        try:
+            # Пытаемся вычислить среднюю цену
+            total_price = sum(product.price for product in self.__products)
+            average_price = total_price / len(self.__products)
+            return round(average_price, 2)
+        except ZeroDivisionError:
+            # Обрабатываем случай, когда в категории нет товаров
+            return 0.0

@@ -1,4 +1,5 @@
 import pytest
+
 from src.category import Category
 from src.product import Product
 
@@ -101,3 +102,17 @@ def test_add_invalid_product(sample_category):
 
     with pytest.raises(TypeError):
         sample_category.add_product({"name": "Не продукт"})
+
+
+def test_middle_price_with_products(sample_category, sample_products):
+    """Тест вычисления средней цены для категории с товарами"""
+    # Средняя цена: (50000.00 + 30000.00 + 10000.00) / 3 = 30000.00
+    total_price = sum(product.price for product in sample_products)
+    expected_average = round(total_price / len(sample_products), 2)
+    assert sample_category.middle_price() == expected_average
+
+
+def test_middle_price_empty_category():
+    """Тест вычисления средней цены для пустой категории - должно возвращать 0"""
+    empty_category = Category("Пустая категория", "Без товаров", [])
+    assert empty_category.middle_price() == 0.0
